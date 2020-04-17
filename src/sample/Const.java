@@ -1,4 +1,5 @@
 package sample;
+
 /*
 Хранит константы, используемые для связи с конкретной таблицей в БД
  */
@@ -9,6 +10,6 @@ public class Const {
     public static final String USERS_LASTNAME = "lastname";
     public static final String USERS_USERNAME = "username";
     public static final String USERS_PASSWORD = "password";
-    public static final String  USERS_LOCATION = "location";
+    public static final String USERS_LOCATION = "location";
     public static final String USERS_GENDER = "gender";
 }
