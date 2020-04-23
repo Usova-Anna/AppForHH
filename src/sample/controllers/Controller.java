@@ -2,11 +2,13 @@ package sample.controllers;
 /*
 Авторизация в приложении
  */
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -44,45 +46,45 @@ public class Controller {
         signInBtn.setOnAction(event -> {
             String loginText = loginField.getText().trim(); //удаляем лишние пробелы
             String loginPassword = passwordField.getText().trim();
-            if(!loginText.equals("")&&!loginPassword.equals("")) {
-                loginUser(loginText,loginPassword);
+            if (!"".equals(loginText) && !"".equals(loginPassword)) {
+                loginUser(loginText, loginPassword);
             } else {
                 System.out.println("Login/Password is empty");
             }
         });
-        signUpBtn.setOnAction(event-> {
-openNewScene("/sample/view/SignUp.fxml");
+        signUpBtn.setOnAction(event -> {
+            openNewScene("/sample/view/SignUp.fxml");
 
         });
 
     }
 
     private void loginUser(String loginText, String loginPassword) {
-DataBaseHandler dbHandler = new DataBaseHandler();
-User user = new User();
-user.setUserName(loginText);
-user.setPassword(loginPassword);
-dbHandler.getUser(user);
-ResultSet result = dbHandler.getUser(user);
+        DataBaseHandler dbHandler = new DataBaseHandler();
+        User user = new User();
+        user.setUserName(loginText);
+        user.setPassword(loginPassword);
+        dbHandler.getUser(user);
+        ResultSet result = dbHandler.getUser(user);
 
-int counter = 0;
+        int counter = 0;
 
-while(true) {
-    try {
-        if (!result.next()) break;
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    counter++;
-}
-if(counter>=1) {
-openNewScene("/sample/view/app.fxml");
-} else {
-    Shake userLoginAnim = new Shake(loginField);
-    Shake userPassAnim = new Shake(passwordField);
-    userLoginAnim.playAnim();
-    userPassAnim.playAnim();
-}
+        while (true) {
+            try {
+                if (!result.next()) break;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            counter++;
+        }
+        if (counter >= 1) {
+            openNewScene("/sample/view/app.fxml");
+        } else {
+            Shake userLoginAnim = new Shake(loginField);
+            Shake userPassAnim = new Shake(passwordField);
+            userLoginAnim.playAnim();
+            userPassAnim.playAnim();
+        }
     }
 
     public void openNewScene(String window) {
@@ -96,7 +98,7 @@ openNewScene("/sample/view/app.fxml");
             e.printStackTrace();
         }
         Parent root = loader.getRoot();
-        Stage stage =  new Stage();
+        Stage stage = new Stage();
         stage.setScene(new Scene(root));
         stage.showAndWait();
     }
