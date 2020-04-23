@@ -1,7 +1,11 @@
-package sample;
+package sample.model;
 /*
 Connecting to DB and editing data
  */
+
+import sample.Configs;
+import sample.Const;
+import sample.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
-public class DataBaseHandler extends Configs {
+class DataBaseHandler extends Configs implements UserModel {
     Connection dbConnetion;
 
     public Connection getDbConnetion() throws ClassNotFoundException, SQLException {
@@ -29,6 +33,7 @@ public class DataBaseHandler extends Configs {
         return dbConnetion;
     }
 
+    @Override
     public void signUpUser(User user) {
         //Добавление данных в БД
         String insert = "INSERT INTO " + Const.USER_TABLE + "(" + Const.USERS_FIRSTNAME + "," + Const.USERS_LASTNAME + "," + Const.USERS_USERNAME
@@ -49,8 +54,27 @@ public class DataBaseHandler extends Configs {
         }
     }
 
+    @Override
+    public Boolean checkUser(String loginText, String loginPassword) {
+        User user = new User();
+        user.setUserName(loginText);
+        user.setPassword(loginPassword);
+        int counter = 0;
+        ResultSet result = getUser(user);
+        while (true) {
+            try {
+                if (!result.next()) break;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            counter++;
+        }
+        return counter > 0;
+    }
+
+
     //Выгрузка данных из БД
-    public ResultSet getUser(User user) {
+    private ResultSet getUser(User user) {
         ResultSet resSet = null;
         //SQL запрос с отбором по логину и паролю
         String select = "SELECT * FROM " + Const.USER_TABLE + " WHERE " + Const.USERS_USERNAME + "=? AND " + Const.USERS_PASSWORD + "=?";

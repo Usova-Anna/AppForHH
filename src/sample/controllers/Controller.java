@@ -17,11 +17,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import sample.DataBaseHandler;
+import sample.model.DataBaseHandler;
 import sample.User;
 import sample.animations.Shake;
+import sample.model.UserModel;
+import sample.model.UserModelFactory;
 
 public class Controller {
+
 
     @FXML
     private ResourceBundle resources;
@@ -60,24 +63,9 @@ public class Controller {
     }
 
     private void loginUser(String loginText, String loginPassword) {
-        DataBaseHandler dbHandler = new DataBaseHandler();
-        User user = new User();
-        user.setUserName(loginText);
-        user.setPassword(loginPassword);
-        dbHandler.getUser(user);
-        ResultSet result = dbHandler.getUser(user);
+        UserModel userModel = UserModelFactory.getUM();
 
-        int counter = 0;
-
-        while (true) {
-            try {
-                if (!result.next()) break;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            counter++;
-        }
-        if (counter >= 1) {
+        if (userModel.checkUser(loginText, loginPassword)) {
             openNewScene("/sample/view/app.fxml");
         } else {
             Shake userLoginAnim = new Shake(loginField);
