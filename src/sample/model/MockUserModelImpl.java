@@ -2,7 +2,7 @@ package sample.model;
 
 import sample.User;
 
-class MockUserModel implements UserModel {
+class MockUserModelImpl implements UserModel {
     @Override
     public void signUpUser(User user) {
         System.out.println(String.valueOf(user));

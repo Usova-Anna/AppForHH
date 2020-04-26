@@ -1,7 +1,4 @@
 package sample.model;
-/*
-Connecting to DB and editing data
- */
 
 import sample.Configs;
 import sample.Const;
@@ -13,10 +10,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
-class DataBaseHandler extends Configs implements UserModel {
-    Connection dbConnetion;
+/**
+ * Connecting to DB and editing data
+ * Packege protected тому що нікому крім цього пакета не треба бачити особливість реалізації
+ */
+class MySQLUserModelImpl extends Configs implements UserModel {
+    Connection dbConneсtion;
 
-    public Connection getDbConnetion() throws ClassNotFoundException, SQLException {
+    private Connection getDbConneсtion() throws ClassNotFoundException, SQLException {
         //String connectionString = "jdbc:mysql://localhost:3306/appforhh?autoReconnect=true&useSSL=false&serverTimezone=Europe/London"; //Connection String
         String connectionString = "jdbc:mysql://"
                 + dbHost + ":"
@@ -29,8 +30,8 @@ class DataBaseHandler extends Configs implements UserModel {
 //                + dbPort + "/"
 //                + dbName;
         Class.forName("com.mysql.cj.jdbc.Driver");
-        dbConnetion = DriverManager.getConnection(connectionString, dbUser, dbPass);
-        return dbConnetion;
+        dbConneсtion = DriverManager.getConnection(connectionString, dbUser, dbPass);
+        return dbConneсtion;
     }
 
     @Override
@@ -39,7 +40,7 @@ class DataBaseHandler extends Configs implements UserModel {
         String insert = "INSERT INTO " + Const.USER_TABLE + "(" + Const.USERS_FIRSTNAME + "," + Const.USERS_LASTNAME + "," + Const.USERS_USERNAME
                 + "," + Const.USERS_PASSWORD + "," + Const.USERS_LOCATION + "," + Const.USERS_GENDER + ")" + "VALUES(?,?,?,?,?,?)";
         try {
-            PreparedStatement prSt = getDbConnetion().prepareStatement(insert);
+            PreparedStatement prSt = getDbConneсtion().prepareStatement(insert);
             prSt.setString(1, user.getFirstName());
             prSt.setString(2, user.getLastName());
             prSt.setString(3, user.getUserName());
@@ -79,7 +80,7 @@ class DataBaseHandler extends Configs implements UserModel {
         //SQL запрос с отбором по логину и паролю
         String select = "SELECT * FROM " + Const.USER_TABLE + " WHERE " + Const.USERS_USERNAME + "=? AND " + Const.USERS_PASSWORD + "=?";
         try {
-            PreparedStatement prSt = getDbConnetion().prepareStatement(select);
+            PreparedStatement prSt = getDbConneсtion().prepareStatement(select);
             prSt.setString(1, user.getUserName());
             prSt.setString(2, user.getPassword());
             resSet = prSt.executeQuery(); //получить данные из БД
