@@ -1,7 +1,8 @@
-package sample;
-/*
-Connecting to DB and editing data
- */
+package sample.model;
+
+import sample.Configs;
+import sample.Const;
+import sample.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,10 +10,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
-public class DataBaseHandler extends Configs {
-    Connection dbConnetion;
+/**
+ * Connecting to DB and editing data
+ * Packege protected тому що нікому крім цього пакета не треба бачити особливість реалізації
+ */
+class MySQLUserModelImpl extends Configs implements UserModel {
+    Connection dbConneсtion;
 
-    public Connection getDbConnetion() throws ClassNotFoundException, SQLException {
+    private Connection getDbConneсtion() throws ClassNotFoundException, SQLException {
         //String connectionString = "jdbc:mysql://localhost:3306/appforhh?autoReconnect=true&useSSL=false&serverTimezone=Europe/London"; //Connection String
         String connectionString = "jdbc:mysql://"
                 + dbHost + ":"
@@ -25,16 +30,17 @@ public class DataBaseHandler extends Configs {
 //                + dbPort + "/"
 //                + dbName;
         Class.forName("com.mysql.cj.jdbc.Driver");
-        dbConnetion = DriverManager.getConnection(connectionString, dbUser, dbPass);
-        return dbConnetion;
+        dbConneсtion = DriverManager.getConnection(connectionString, dbUser, dbPass);
+        return dbConneсtion;
     }
 
+    @Override
     public void signUpUser(User user) {
         //Добавление данных в БД
         String insert = "INSERT INTO " + Const.USER_TABLE + "(" + Const.USERS_FIRSTNAME + "," + Const.USERS_LASTNAME + "," + Const.USERS_USERNAME
                 + "," + Const.USERS_PASSWORD + "," + Const.USERS_LOCATION + "," + Const.USERS_GENDER + ")" + "VALUES(?,?,?,?,?,?)";
         try {
-            PreparedStatement prSt = getDbConnetion().prepareStatement(insert);
+            PreparedStatement prSt = getDbConneсtion().prepareStatement(insert);
             prSt.setString(1, user.getFirstName());
             prSt.setString(2, user.getLastName());
             prSt.setString(3, user.getUserName());
@@ -49,13 +55,32 @@ public class DataBaseHandler extends Configs {
         }
     }
 
+    @Override
+    public Boolean checkUser(String loginText, String loginPassword) {
+        User user = new User();
+        user.setUserName(loginText);
+        user.setPassword(loginPassword);
+        int counter = 0;
+        ResultSet result = getUser(user);
+        while (true) {
+            try {
+                if (!result.next()) break;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            counter++;
+        }
+        return counter > 0;
+    }
+
+
     //Выгрузка данных из БД
-    public ResultSet getUser(User user) {
+    private ResultSet getUser(User user) {
         ResultSet resSet = null;
         //SQL запрос с отбором по логину и паролю
         String select = "SELECT * FROM " + Const.USER_TABLE + " WHERE " + Const.USERS_USERNAME + "=? AND " + Const.USERS_PASSWORD + "=?";
         try {
-            PreparedStatement prSt = getDbConnetion().prepareStatement(select);
+            PreparedStatement prSt = getDbConneсtion().prepareStatement(select);
             prSt.setString(1, user.getUserName());
             prSt.setString(2, user.getPassword());
             resSet = prSt.executeQuery(); //получить данные из БД
