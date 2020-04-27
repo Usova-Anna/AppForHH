@@ -2,6 +2,7 @@ package sample.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -44,11 +45,8 @@ public class SignUpController {
 
     @FXML
     void initialize() {
-
         SignUpSignUpBtn.setOnAction(event -> {
             signUpNewUser();
-
-
         });
     }
 
@@ -60,14 +58,13 @@ public class SignUpController {
         String password = signUpPasswordField.getText();
         String location = signUpLocation.getText();
         String gender = "";
-        if(signUpCheckBoxMale.isSelected()) {
+        if (signUpCheckBoxMale.isSelected()) {
             gender = "Male";
         } else {
             gender = "Female";
         }
-User user = new User(firstName, lastName, userName, password,location,gender);
+        User user = new User(firstName, lastName, userName, password, location, gender);
         dbHandler.signUpUser(user);
-
     }
 }
 

@@ -7,5 +7,4 @@ public class HomeController {
 
     @FXML
     private ImageView imageBtnMaska;
-
 }
